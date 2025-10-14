@@ -1,0 +1,1 @@
+Types used with MQTT by ground stations and mission control centers.
