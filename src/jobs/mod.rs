@@ -2,13 +2,15 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
+// TODO: use sgp4 elements instead of TLE DATA
+
 /// # Job
 ///
 /// A job instructs the ground station to track a specific satellite pass,
 /// specifying:
 ///
 /// - **Job identification**: Unique identifier (`id`)
-/// - **Satellite identification**: Name of the satellite (`satellite_name`)
+/// - **Satellite identification**: ID of the satellite (`satellite_id`)
 /// - **Time window**: When tracking should start and end (`start`, `end`)
 /// - **Satellite orbital data**: Two-Line Element set (`tle`)
 /// - **Transceiver frequencies**: Downlink (`rx_frequency`) and uplink (`tx_frequency`)
@@ -160,4 +162,60 @@ pub struct TleData {
     /// The second data line of the TLE
     #[schema(example = "2 25544  51.6355 332.1708 0003307 260.2831  99.7785 15.50129787525648")]
     pub tle2: String,
+}
+
+/// Error type for TLE parsing failures
+#[derive(Debug, Clone)]
+pub enum TleParseError {
+    /// Not enough lines in the input (expected 3)
+    InsufficientLines,
+    /// TLE line 1 doesn't have the correct length (expected 69 characters)
+    InvalidTle1Length,
+    /// TLE line 2 doesn't have the correct length (expected 69 characters)
+    InvalidTle2Length,
+}
+
+impl TryFrom<String> for TleData {
+    type Error = TleParseError;
+
+    /// Parses a TLE string into TleData.
+    ///
+    /// The input string should contain three lines separated by newlines:
+    /// - Line 0: Satellite name or identifier
+    /// - Line 1: First TLE data line (exactly 69 characters)
+    /// - Line 2: Second TLE data line (exactly 69 characters)
+    ///
+    /// # Example
+    /// ```
+    /// use rustar_types::jobs::TleData;
+    /// use std::convert::TryFrom;
+    ///
+    /// let tle_string = "ISS (ZARYA)
+    /// 1 25544U 98067A   25235.75642456  .00011222  00000+0  20339-3 0  9993
+    /// 2 25544  51.6355 332.1708 0003307 260.2831  99.7785 15.50129787525648".to_string();
+    ///
+    /// let tle_data = TleData::try_from(tle_string).unwrap();
+    /// ```
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        let lines: Vec<&str> = value.lines().collect();
+
+        if lines.len() < 3 {
+            return Err(TleParseError::InsufficientLines);
+        }
+
+        let tle0 = lines[0].trim().to_string();
+        let tle1 = lines[1].trim().to_string();
+        let tle2 = lines[2].trim().to_string();
+
+        // Validate TLE line lengths
+        if tle1.len() != 69 {
+            return Err(TleParseError::InvalidTle1Length);
+        }
+
+        if tle2.len() != 69 {
+            return Err(TleParseError::InvalidTle2Length);
+        }
+
+        Ok(TleData { tle0, tle1, tle2 })
+    }
 }
