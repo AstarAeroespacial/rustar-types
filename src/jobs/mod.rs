@@ -130,7 +130,7 @@ pub struct Job {
     pub uplink: Option<Vec<u8>>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum JobStatus {
     Received,
     Scheduled,
