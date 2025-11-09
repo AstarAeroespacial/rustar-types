@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 // TODO: use sgp4 elements instead of TLE DATA
+// TODO: builder interface from TLE data and parses to elements
 
 /// # Job
 ///
@@ -217,5 +218,29 @@ impl TryFrom<String> for TleData {
         }
 
         Ok(TleData { tle0, tle1, tle2 })
+    }
+}
+
+impl Job {
+    pub fn new(
+        id: u64,
+        satellite_id: impl Into<String>,
+        start: DateTime<Utc>,
+        end: DateTime<Utc>,
+        tle: TleData,
+        rx_frequency: f64,
+        tx_frequency: f64,
+        uplink: Option<Vec<u8>>,
+    ) -> Self {
+        Job {
+            id,
+            satellite_id: satellite_id.into(),
+            start,
+            end,
+            tle,
+            rx_frequency,
+            tx_frequency,
+            uplink,
+        }
     }
 }
