@@ -131,6 +131,12 @@ pub struct Job {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct JobStatusUpdate {
+    pub timestamp: DateTime<Utc>,
+    pub status: JobStatus,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub enum JobStatus {
     Received,
     Scheduled,
