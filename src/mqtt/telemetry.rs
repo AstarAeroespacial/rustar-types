@@ -3,9 +3,9 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TelemetryMessage {
-    ground_station_id: String,
-    timestamp: DateTime<Utc>,
-    payload: Vec<u8>,
+    pub ground_station_id: String,
+    pub timestamp: DateTime<Utc>,
+    pub payload: Vec<u8>,
 }
 
 impl TelemetryMessage {
