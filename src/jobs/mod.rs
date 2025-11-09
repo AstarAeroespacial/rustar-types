@@ -18,7 +18,7 @@ use utoipa::ToSchema;
 /// ```json
 /// {
 ///   "id": 12345,
-///   "satellite_name": "ISS (ZARYA)",
+///   "satellite_id": "ISS (ZARYA)",
 ///   "start": "2025-09-19T12:00:00Z",
 ///   "end": "2025-09-19T12:15:00Z",
 ///   "tle": {
@@ -34,7 +34,7 @@ use utoipa::ToSchema;
 ///
 /// ## Notes:
 /// - `id` must be a **unique 64-bit unsigned integer** identifying this job.
-/// - `satellite_name` is the human-readable name of the satellite being tracked.
+/// - `satellite_id` is the identifier of the satellite being tracked.
 /// - `start` and `end` must be **UTC timestamps** in ISO-8601 format. (Use https://www.utctime.net/ for getting the current UTC timestamp.)
 /// - `tle1` and `tle2` **must be exactly 69 characters long** with valid checksums.
 /// - `rx_frequency` and `tx_frequency` are expressed in **Hertz**.
@@ -50,13 +50,13 @@ pub struct Job {
     #[schema(example = 12345)]
     pub id: u64,
 
-    /// **Satellite name**.
+    /// **Satellite ID**.
     ///
-    /// Human-readable name of the satellite to be tracked.
+    /// Identifier of the satellite to be tracked.
     ///
     /// Example: `"ISS (ZARYA)"`
     #[schema(example = "ISS (ZARYA)")]
-    pub satellite_name: String,
+    pub satellite_id: String,
 
     /// UTC timestamp for when the tracking should **begin**.
     ///
