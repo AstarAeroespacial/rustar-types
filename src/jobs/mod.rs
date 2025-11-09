@@ -40,7 +40,7 @@ use utoipa::ToSchema;
 /// - `rx_frequency` and `tx_frequency` are expressed in **Hertz**.
 /// - `uplink` is **optional** and contains raw bytes to transmit to the satellite during the pass.
 #[allow(dead_code)]
-#[derive(Deserialize, ToSchema, Debug)]
+#[derive(Serialize, Deserialize, ToSchema, Debug)]
 pub struct Job {
     /// **Unique job identifier**.
     ///
@@ -149,7 +149,7 @@ pub enum JobStatus {
 /// 1 25544U 98067A   25235.75642456  .00011222  00000+0  20339-3 0  9993
 /// 2 25544  51.6355 332.1708 0003307 260.2831  99.7785 15.50129787525648
 /// ```
-#[derive(Deserialize, ToSchema, Debug)]
+#[derive(Serialize, Deserialize, ToSchema, Debug)]
 pub struct TleData {
     /// Satellite name or catalog ID (first line of a TLE set)
     #[schema(example = "ISS (ZARYA)")]
